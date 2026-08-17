@@ -54,8 +54,8 @@ export function EventDetailModal() {
     if (res.success && res.ticket) {
       // Trigger canvas confetti!
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 90,
+        spread: 80,
         origin: { y: 0.6 }
       });
       setAlertMsg({ type: 'success', text: res.message });
@@ -69,38 +69,38 @@ export function EventDetailModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md overflow-y-auto">
       <div 
-        className="relative w-full max-w-3xl glass-panel rounded-3xl border border-slate-700/80 overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-3xl bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={() => setSelectedEvent(null)}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-950/80 hover:bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-colors"
+          className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-slate-500 hover:text-slate-900 border border-slate-200 transition-colors shadow-md"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Hero Banner */}
-        <div className="relative h-64 sm:h-72 w-full bg-slate-900">
+        {/* Hero Banner Header */}
+        <div className="relative h-64 sm:h-76 w-full bg-slate-100">
           <img
             src={selectedEvent.banner_url || selectedEvent.image_url}
             alt={selectedEvent.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
           
-          <div className="absolute bottom-4 left-6 right-6 space-y-2">
+          <div className="absolute bottom-5 left-6 right-6 space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-600 text-white shadow-md">
+              <span className="px-3.5 py-1 rounded-full text-xs font-extrabold bg-blue-600 text-white shadow-sm uppercase tracking-wider">
                 {selectedEvent.category}
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/90 text-slate-300 border border-slate-700">
+              <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-md text-slate-900 border border-slate-200">
                 {selectedEvent.club_name}
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-snug">
+            <h2 className="text-2xl sm:text-3xl font-black text-white leading-snug tracking-tight">
               {selectedEvent.title}
             </h2>
           </div>
@@ -111,98 +111,98 @@ export function EventDetailModal() {
           
           {/* Success / Error Notification */}
           {alertMsg && (
-            <div className={`p-4 rounded-xl text-sm font-semibold flex items-center gap-3 ${
-              alertMsg.type === 'success' ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800' : 'bg-rose-950/80 text-rose-300 border border-rose-800'
+            <div className={`p-4 rounded-2xl text-xs font-extrabold flex items-center gap-3 shadow-sm ${
+              alertMsg.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
             }`}>
-              {alertMsg.type === 'success' ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <AlertCircle className="w-5 h-5 shrink-0" />}
+              {alertMsg.type === 'success' ? <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" /> : <AlertCircle className="w-5 h-5 shrink-0 text-rose-600" />}
               <span>{alertMsg.text}</span>
             </div>
           )}
 
           {/* Metadata Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-900/60 border border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-950 flex items-center justify-center text-indigo-400">
+              <div className="w-11 h-11 rounded-2xl bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0 shadow-sm">
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] text-slate-400 font-medium">Date</p>
-                <p className="text-xs font-bold text-white">{formatDate(selectedEvent.date)}</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Date</p>
+                <p className="text-xs font-extrabold text-slate-900">{formatDate(selectedEvent.date)}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-950 flex items-center justify-center text-cyan-400">
+              <div className="w-11 h-11 rounded-2xl bg-cyan-100 border border-cyan-200 flex items-center justify-center text-cyan-700 shrink-0 shadow-sm">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] text-slate-400 font-medium">Time</p>
-                <p className="text-xs font-bold text-white">{selectedEvent.time}</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Time</p>
+                <p className="text-xs font-extrabold text-slate-900">{selectedEvent.time}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-950 flex items-center justify-center text-purple-400">
+              <div className="w-11 h-11 rounded-2xl bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-700 shrink-0 shadow-sm">
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] text-slate-400 font-medium">Location</p>
-                <p className="text-xs font-bold text-white truncate max-w-[150px]">{selectedEvent.location}</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Venue Location</p>
+                <p className="text-xs font-extrabold text-slate-900 truncate max-w-[150px]">{selectedEvent.location}</p>
               </div>
             </div>
           </div>
 
           {/* Description */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-bold text-white uppercase tracking-wider">About This Event</h4>
-            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+          <div className="space-y-2">
+            <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest">About This Event</h4>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line font-normal">
               {selectedEvent.description}
             </p>
           </div>
 
           {/* Tags */}
           {selectedEvent.tags && selectedEvent.tags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 pt-2">
-              <span className="text-xs text-slate-400 mr-2 font-medium">Tags:</span>
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-xs font-bold text-slate-500 mr-1">Tags:</span>
               {selectedEvent.tags.map((tag) => (
-                <span key={tag} className="px-2.5 py-1 rounded-lg text-xs bg-slate-900 text-slate-300 border border-slate-800">
+                <span key={tag} className="px-3 py-1 rounded-full text-xs font-extrabold bg-blue-50 text-blue-700 border border-blue-200">
                   #{tag}
                 </span>
               ))}
             </div>
           )}
 
-          {/* Capacity Progress */}
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+          {/* Capacity Progress Bar */}
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-indigo-400" />
-                Capacity Status
+              <span className="text-slate-700 font-extrabold flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-600" />
+                Seat Capacity Status
               </span>
-              <span className="text-slate-300 font-bold">
-                {selectedEvent.registered_count} / {selectedEvent.capacity} seats filled ({fillPercentage}%)
+              <span className="text-slate-900 font-extrabold">
+                {selectedEvent.registered_count} / {selectedEvent.capacity} filled ({fillPercentage}%)
               </span>
             </div>
-            <div className="w-full h-2.5 rounded-full bg-slate-800 overflow-hidden">
+            <div className="w-full h-2.5 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
               <div 
-                className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 rounded-full transition-all duration-500"
+                className="h-full bg-blue-600 rounded-full transition-all duration-500"
                 style={{ width: `${fillPercentage}%` }}
               />
             </div>
           </div>
 
-          {/* Footer Registration Controls */}
-          <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <Building2 className="w-4 h-4 text-slate-400" />
-              <span>Organized by <strong className="text-white">{selectedEvent.club_name}</strong></span>
+          {/* Footer Control Bar */}
+          <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+              <Building2 className="w-4 h-4 text-blue-600" />
+              <span>Organized by <strong className="text-slate-900 font-bold">{selectedEvent.club_name}</strong></span>
             </div>
 
             <div className="w-full sm:w-auto">
               {registered ? (
                 <button
                   onClick={handleRegister}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-slate-950 flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full text-xs font-black bg-emerald-500 hover:bg-emerald-600 text-white flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 transition-all"
                 >
                   <Ticket className="w-4 h-4" />
                   View Registered Pass / QR
@@ -210,7 +210,7 @@ export function EventDetailModal() {
               ) : !isLoggedIn ? (
                 <button
                   onClick={handleRegister}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition-all"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full text-xs font-black bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Lock className="w-4 h-4" />
                   Log In to Register
@@ -218,7 +218,7 @@ export function EventDetailModal() {
               ) : isFull ? (
                 <button
                   disabled
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl text-sm font-bold bg-slate-800 text-slate-500 cursor-not-allowed"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full text-xs font-extrabold bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
                 >
                   Registration Closed (Full)
                 </button>
@@ -226,7 +226,7 @@ export function EventDetailModal() {
                 <button
                   disabled={loading}
                   onClick={handleRegister}
-                  className="w-full sm:w-auto px-8 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all transform active:scale-95"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-full text-xs font-black bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25 flex items-center justify-center gap-2 transition-all transform active:scale-95"
                 >
                   {loading ? 'Processing...' : 'Confirm Registration'}
                   <ArrowRight className="w-4 h-4" />
@@ -240,3 +240,5 @@ export function EventDetailModal() {
     </div>
   );
 }
+
+

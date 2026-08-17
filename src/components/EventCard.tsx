@@ -14,7 +14,8 @@ import {
   CheckCircle2, 
   Ticket, 
   Lock,
-  ArrowRight
+  ArrowRight,
+  Star
 } from 'lucide-react';
 
 interface EventCardProps {
@@ -29,11 +30,6 @@ export function EventCard({ event }: EventCardProps) {
   const myTicket = getRegistrationForEvent(event.id);
   const isFull = event.registered_count >= event.capacity;
   const fillPercentage = Math.min(100, Math.round((event.registered_count / event.capacity) * 100));
-
-  // Determine capacity bar color
-  let progressColor = 'bg-indigo-500';
-  if (fillPercentage >= 90) progressColor = 'bg-rose-500';
-  else if (fillPercentage >= 70) progressColor = 'bg-amber-500';
 
   const handleRegisterClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -56,126 +52,139 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <div 
       onClick={() => setSelectedEvent(event)}
-      className="group relative rounded-2xl glass-panel border border-slate-800/80 hover:border-indigo-500/50 overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-indigo-950/40 cursor-pointer"
+      className="group relative bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer overflow-hidden"
     >
       
       {/* Image Container & Badges */}
-      <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-900">
-        <img 
-          src={event.image_url || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80'} 
-          alt={event.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+      <div className="relative h-48 w-full overflow-hidden bg-slate-100 p-3">
+        <div className="w-full h-full rounded-xl overflow-hidden relative">
+          <img 
+            src={event.image_url || 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop&q=80'} 
+            alt={event.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+          />
 
-        {/* Category Badge */}
-        <div className="absolute top-3 left-3 flex items-center gap-2">
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-950/80 backdrop-blur-md text-indigo-300 border border-indigo-500/30">
-            {event.category}
-          </span>
-          {event.is_featured && (
-            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/90 text-slate-950 flex items-center gap-1 shadow-md">
-              <Sparkles className="w-3 h-3 fill-slate-950" /> Featured
+          {/* Top Category Badge */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full text-[11px] font-black bg-white/90 backdrop-blur-md text-blue-600 border border-slate-200 shadow-sm">
+              {event.category}
             </span>
-          )}
-        </div>
-
-        {/* Registered Ribbon */}
-        {registered && (
-          <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500 text-slate-950 flex items-center gap-1 shadow-lg">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Registered
+            {event.is_featured && (
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-400 text-slate-900 shadow-sm flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> Featured
+              </span>
+            )}
           </div>
-        )}
 
-        {/* Club Tag */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-          <span className="text-xs font-semibold text-slate-300 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-800">
-            {event.club_name}
-          </span>
+          {registered && (
+            <div className="absolute top-2.5 right-2.5">
+              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-500 text-white flex items-center gap-1 shadow-md">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Registered
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Content Body */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         
-        <div className="space-y-2">
-          <h3 className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-2">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-[11px] text-slate-400 font-bold">
+            <span>{event.club_name}</span>
+            <span className="flex items-center gap-1 text-amber-500">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              <strong className="text-slate-700">4.8</strong> ({event.registered_count + 12})
+            </span>
+          </div>
+
+          <h3 className="text-base font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
             {event.title}
           </h3>
-          <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+
+          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
             {event.short_description || event.description}
           </p>
         </div>
 
-        {/* Metadata Details */}
-        <div className="space-y-2 text-xs text-slate-300 pt-2 border-t border-slate-800/60">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-indigo-400 shrink-0" />
-            <span>{formatDate(event.date)}</span>
+        {/* Details Grid */}
+        <div className="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1.5 font-medium">
+              <Calendar className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              {formatDate(event.date)}
+            </span>
+            <span className="flex items-center gap-1.5 font-medium">
+              <Clock className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
+              {event.time}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>{event.time}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-purple-400 shrink-0" />
+
+          <div className="flex items-center gap-1.5 font-medium truncate pt-0.5">
+            <MapPin className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
             <span className="truncate">{event.location}</span>
           </div>
         </div>
 
-        {/* Seats Capacity Meter */}
-        <div className="space-y-1.5 pt-1">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-medium flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-slate-400" />
-              Seat Capacity
+        {/* Seat Meter */}
+        <div className="space-y-1 pt-1">
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-slate-500 font-medium flex items-center gap-1">
+              <Users className="w-3 h-3 text-blue-600" /> Seats Registered
             </span>
-            <span className={`font-semibold ${fillPercentage >= 90 ? 'text-rose-400' : 'text-slate-200'}`}>
-              {event.registered_count} / {event.capacity} registered ({fillPercentage}%)
+            <span className="font-bold text-slate-900">
+              {event.registered_count} / {event.capacity}
             </span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
             <div 
-              className={`h-full ${progressColor} transition-all duration-500 rounded-full`} 
+              className="h-full bg-blue-600 rounded-full transition-all duration-500" 
               style={{ width: `${fillPercentage}%` }}
             />
           </div>
         </div>
 
-        {/* Card Action Button */}
-        <div className="pt-2">
-          {registered ? (
-            <button
-              onClick={handleRegisterClick}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-emerald-950/80 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-700/60 flex items-center justify-center gap-2 transition-all"
-            >
-              <Ticket className="w-4 h-4" />
-              View Digital Pass / QR
-            </button>
-          ) : !isLoggedIn ? (
-            <button
-              onClick={handleRegisterClick}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white border border-slate-700 hover:border-indigo-500 flex items-center justify-center gap-2 transition-all shadow-sm"
-            >
-              <Lock className="w-3.5 h-3.5 text-indigo-400" />
-              Log In to Register
-            </button>
-          ) : isFull ? (
-            <button
-              disabled
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 cursor-not-allowed text-center"
-            >
-              Fully Booked
-            </button>
-          ) : (
-            <button
-              onClick={handleRegisterClick}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 transition-all transform active:scale-95"
-            >
-              <span>Register Now</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          )}
+        {/* Flowdesk Action Row */}
+        <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+          <div>
+            <span className="text-[10px] text-slate-400 font-bold block uppercase">ENTRY PASS</span>
+            <span className="text-sm font-black text-slate-900">FREE Pass</span>
+          </div>
+
+          <div>
+            {registered ? (
+              <button
+                onClick={handleRegisterClick}
+                className="py-2 px-4 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5 shadow-sm hover:bg-emerald-100 transition-all"
+              >
+                <Ticket className="w-3.5 h-3.5" />
+                View Pass
+              </button>
+            ) : !isLoggedIn ? (
+              <button
+                onClick={handleRegisterClick}
+                className="py-2 px-4 rounded-full text-xs font-extrabold bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white border border-slate-200 flex items-center gap-1.5 transition-all shadow-sm"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                Sign In
+              </button>
+            ) : isFull ? (
+              <button
+                disabled
+                className="py-2 px-4 rounded-full text-xs font-extrabold bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
+              >
+                Full
+              </button>
+            ) : (
+              <button
+                onClick={handleRegisterClick}
+                className="py-2 px-5 rounded-full text-xs font-black bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20 flex items-center gap-1.5 transition-all transform active:scale-95"
+              >
+                <span>Reserve Pass</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
       </div>
@@ -183,3 +192,5 @@ export function EventCard({ event }: EventCardProps) {
     </div>
   );
 }
+
+

@@ -10,10 +10,7 @@ import {
   Mail, 
   Lock, 
   User, 
-  BookOpen, 
-  Sparkles, 
-  ShieldCheck, 
-  CheckCircle2
+  BookOpen
 } from 'lucide-react';
 
 export function AuthModal() {
@@ -25,7 +22,6 @@ export function AuthModal() {
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [department, setDepartment] = useState('Computer Science');
-  const [selectedRole, setSelectedRole] = useState<UserRole>('student');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -42,133 +38,69 @@ export function AuthModal() {
         setLoading(false);
         return;
       }
-      await login(email, selectedRole, name);
+      await login(email, 'student', name);
     } else {
       if (!email || !name) {
         setErrorMsg('Please complete all required fields.');
         setLoading(false);
         return;
       }
-      await signup(email, name, studentId, department, selectedRole);
+      await signup(email, name, studentId, department, 'student');
     }
 
     setLoading(false);
   };
 
-  const fillDemoStudent = () => {
-    setEmail('alex.morgan@campus.edu');
-    setName('Alex Morgan');
-    setStudentId('CS2026-8942');
-    setSelectedRole('student');
-  };
-
-  const fillDemoAdmin = () => {
-    setEmail('admin.events@campus.edu');
-    setName('Dr. Sarah Connor');
-    setStudentId('STAFF-1002');
-    setSelectedRole('admin');
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md overflow-y-auto">
       <div 
-        className="relative w-full max-w-md glass-panel rounded-3xl border border-indigo-500/40 overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-md bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl my-8 animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-950/80 hover:bg-slate-900 text-slate-400 hover:text-white border border-slate-800 transition-colors"
+          className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-white/90 hover:bg-white text-slate-500 hover:text-slate-900 border border-slate-200 transition-colors shadow-md"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="p-6 bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border-b border-slate-800 text-center space-y-2">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-indigo-400 shadow-lg">
+        <div className="p-6 bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 border-b border-slate-200 text-center space-y-2">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/30">
             {mode === 'login' ? <LogIn className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
           </div>
-          <h3 className="text-xl font-extrabold text-white">
+          <h3 className="text-xl font-black text-white">
             {mode === 'login' ? 'Sign In to CampusPulse' : 'Create Student Account'}
           </h3>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-blue-200">
             {mode === 'login' 
-              ? 'Access club events, registered tickets, and admin dashboard' 
+              ? 'Access club events, registered tickets, and digital passes' 
               : 'Register for upcoming club events and generate your digital pass'}
           </p>
-        </div>
-
-        {/* Demo Fast Preset Bar */}
-        <div className="p-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between text-xs px-6">
-          <span className="text-slate-400 font-medium">Quick Demo Preset:</span>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={fillDemoStudent}
-              className="px-2.5 py-1 rounded-lg bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-800/60 font-semibold transition-colors"
-            >
-              Student Preset
-            </button>
-            <button
-              type="button"
-              onClick={fillDemoAdmin}
-              className="px-2.5 py-1 rounded-lg bg-purple-950 hover:bg-purple-900 text-purple-300 border border-purple-800/60 font-semibold transition-colors"
-            >
-              Admin Preset
-            </button>
-          </div>
         </div>
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-rose-950/80 text-rose-300 text-xs border border-rose-800 font-medium">
+            <div className="p-3.5 rounded-2xl bg-rose-50 text-rose-700 text-xs border border-rose-200 font-extrabold">
               {errorMsg}
             </div>
           )}
 
-          {/* Role selector */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-300">Account Type / Role</label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedRole('student')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border flex items-center justify-center gap-2 transition-all ${
-                  selectedRole === 'student'
-                    ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-600/30'
-                    : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
-                }`}
-              >
-                <User className="w-3.5 h-3.5" /> Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedRole('admin')}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border flex items-center justify-center gap-2 transition-all ${
-                  selectedRole === 'admin'
-                    ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-600/30'
-                    : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
-                }`}
-              >
-                <ShieldCheck className="w-3.5 h-3.5" /> Club Admin
-              </button>
-            </div>
-          </div>
-
           {/* Full Name for Signup */}
           {mode === 'signup' && (
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-300">Full Name</label>
+              <label className="text-xs font-bold text-slate-700">Full Name</label>
               <div className="relative flex items-center">
-                <User className="w-4 h-4 text-slate-400 absolute left-3" />
+                <User className="w-4 h-4 text-slate-400 absolute left-3.5" />
                 <input
                   type="text"
                   placeholder="e.g. Alex Morgan"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-medium"
                 />
               </div>
             </div>
@@ -176,15 +108,15 @@ export function AuthModal() {
 
           {/* Email */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-300">Campus Email Address</label>
+            <label className="text-xs font-bold text-slate-700">Campus Email Address</label>
             <div className="relative flex items-center">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3" />
+              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5" />
               <input
                 type="email"
                 placeholder="student@campus.edu"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-medium"
               />
             </div>
           </div>
@@ -193,23 +125,23 @@ export function AuthModal() {
           {mode === 'signup' && (
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Student Roll / ID</label>
+                <label className="text-xs font-bold text-slate-700">Student Roll / ID</label>
                 <input
                   type="text"
                   placeholder="CS2026-8942"
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-medium"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Department</label>
+                <label className="text-xs font-bold text-slate-700">Department</label>
                 <input
                   type="text"
                   placeholder="Computer Science"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 font-medium"
                 />
               </div>
             </div>
@@ -219,7 +151,7 @@ export function AuthModal() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-600/30 transition-all transform active:scale-95"
+            className="w-full py-3.5 rounded-full font-black text-xs text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/25 transition-all transform active:scale-95"
           >
             {loading ? 'Authenticating...' : mode === 'login' ? 'Sign In Now' : 'Complete Account Registration'}
           </button>
@@ -229,7 +161,7 @@ export function AuthModal() {
             <button
               type="button"
               onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setErrorMsg(''); }}
-              className="text-xs text-slate-400 hover:text-indigo-300 font-medium underline"
+              className="text-xs text-slate-500 hover:text-blue-600 font-bold underline"
             >
               {mode === 'login' 
                 ? "Don't have an account yet? Create one here" 
@@ -242,3 +174,6 @@ export function AuthModal() {
     </div>
   );
 }
+
+
+

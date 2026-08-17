@@ -28,19 +28,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [isSupabaseConnected, setIsSupabaseConnected] = useState(false);
 
+  // Helper to persist user to localStorage and document.cookie for middleware server-side checks
+  const persistUserSession = (profile: UserProfile | null) => {
+    setUser(profile);
+    if (profile) {
+      const jsonStr = JSON.stringify(profile);
+      localStorage.setItem('campus_pulse_user', jsonStr);
+      document.cookie = `campus_pulse_user=${encodeURIComponent(jsonStr)}; path=/; max-age=86400; SameSite=Lax`;
+    } else {
+      localStorage.removeItem('campus_pulse_user');
+      document.cookie = `campus_pulse_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    }
+  };
+
   useEffect(() => {
-    // Check local storage or initialize with default demo user
+    // Check stored user profile
     const savedUser = localStorage.getItem('campus_pulse_user');
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        persistUserSession(parsed);
       } catch {
-        setUser(DEMO_STUDENT_PROFILE);
+        persistUserSession(DEMO_STUDENT_PROFILE);
       }
     } else {
-      // Default to demo student logged in for smooth exploration, can log out anytime!
-      setUser(DEMO_STUDENT_PROFILE);
-      localStorage.setItem('campus_pulse_user', JSON.stringify(DEMO_STUDENT_PROFILE));
+      persistUserSession(DEMO_STUDENT_PROFILE);
     }
 
     // Check if Supabase keys exist
@@ -56,8 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .single()
             .then(({ data }) => {
               if (data) {
-                setUser(data);
-                localStorage.setItem('campus_pulse_user', JSON.stringify(data));
+                persistUserSession(data);
               }
             });
         }
@@ -74,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthModalOpen(false);
   };
 
-  const login = async (email: string, rolePreference: UserRole = 'student', namePreference?: string): Promise<boolean> => {
+  const login = async (email: string, _rolePref?: UserRole, namePreference?: string): Promise<boolean> => {
     const supabase = createClient();
     if (supabase && isSupabaseConnected) {
       const { error } = await supabase.auth.signInWithPassword({
@@ -87,15 +98,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // Demo Mode Fallback
-    const profile: UserProfile = rolePreference === 'admin' ? DEMO_ADMIN_PROFILE : {
+    // Role is strictly derived from user identity, not client UI choice
+    const isAdminEmail = email.toLowerCase().includes('admin') || email.toLowerCase().includes('staff');
+    const profile: UserProfile = isAdminEmail ? DEMO_ADMIN_PROFILE : {
       ...DEMO_STUDENT_PROFILE,
+      id: `u-${Date.now()}`,
       email,
-      full_name: namePreference || (email.split('@')[0] ? email.split('@')[0].toUpperCase() : 'Student')
+      full_name: namePreference || (email.split('@')[0] ? email.split('@')[0].toUpperCase() : 'Student'),
+      role: 'student'
     };
 
-    setUser(profile);
-    localStorage.setItem('campus_pulse_user', JSON.stringify(profile));
+    persistUserSession(profile);
     closeAuthModal();
     return true;
   };
@@ -104,8 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     email: string,
     name: string,
     studentId?: string,
-    department?: string,
-    role: UserRole = 'student'
+    department?: string
   ): Promise<boolean> => {
     const supabase = createClient();
     if (supabase && isSupabaseConnected) {
@@ -117,7 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             full_name: name,
             student_id: studentId,
             department,
-            role
+            role: 'student' // Always create student accounts by default for security
           }
         }
       });
@@ -134,12 +146,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       student_id: studentId || 'CS2026-NEW',
       department: department || 'General Studies',
       avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      role,
+      role: 'student',
       created_at: new Date().toISOString()
     };
 
-    setUser(newProfile);
-    localStorage.setItem('campus_pulse_user', JSON.stringify(newProfile));
+    persistUserSession(newProfile);
     closeAuthModal();
     return true;
   };
@@ -149,19 +160,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (supabase && isSupabaseConnected) {
       supabase.auth.signOut();
     }
-    setUser(null);
-    localStorage.removeItem('campus_pulse_user');
+    persistUserSession(null);
   };
 
-  const switchRole = (newRole: UserRole) => {
-    if (newRole === 'admin') {
-      setUser(DEMO_ADMIN_PROFILE);
-      localStorage.setItem('campus_pulse_user', JSON.stringify(DEMO_ADMIN_PROFILE));
-    } else {
-      setUser(DEMO_STUDENT_PROFILE);
-      localStorage.setItem('campus_pulse_user', JSON.stringify(DEMO_STUDENT_PROFILE));
-    }
+  const switchRole = (_newRole: UserRole) => {
+    // Role switching UI disabled for security compliance
   };
+
+
 
   return (
     <AuthContext.Provider

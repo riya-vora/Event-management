@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/HeroSection';
 import { EventFilters } from '@/components/EventFilters';
 import { EventCard } from '@/components/EventCard';
 import { useEvents } from '@/lib/events-context';
-import { Sparkles, CalendarX, Compass } from 'lucide-react';
+import { Sparkles, CalendarX, Compass, FilterX, Users, BookOpen, Star, Award, QrCode } from 'lucide-react';
 
 export default function HomePage() {
   const { events, filters, setCategoryFilter, setSearchQuery } = useEvents();
@@ -33,78 +33,176 @@ export default function HomePage() {
     }
   });
 
-  const featuredEvents = events.filter(e => e.is_featured);
-
   const resetFilters = () => {
     setCategoryFilter('All');
     setSearchQuery('');
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-20">
+    <div className="min-h-screen bg-slate-50 pb-24">
       
-      {/* Hero Banner */}
+      {/* Flowdesk Hero Banner */}
       <HeroSection />
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
         
         {/* Category Filters Bar */}
         <EventFilters />
 
-        {/* Featured Events Highlight (Only show if no search query is active) */}
-        {!filters.searchQuery && filters.category === 'All' && featuredEvents.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
-              <h2 className="text-xl font-extrabold text-white tracking-tight">Featured Club Events</h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredEvents.slice(0, 3).map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* All Events Discovery Section */}
-        <div className="space-y-6">
+        {/* Flowdesk Trending Now Event Section */}
+        <div id="explore-events" className="space-y-6 scroll-mt-24">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Compass className="w-5 h-5 text-indigo-400" />
-              <h2 className="text-xl font-extrabold text-white tracking-tight">
-                {filters.category === 'All' ? 'All Upcoming Campus Events' : `${filters.category} Events`}
-              </h2>
+            <div>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Trending now</h2>
+              <p className="text-xs text-slate-500 font-medium">Curated workshops and passes curated for you.</p>
             </div>
-            <span className="text-xs text-slate-400">
-              Showing {filteredEvents.length} events
-            </span>
+            <button 
+              onClick={resetFilters}
+              className="text-xs font-black text-blue-600 hover:text-blue-700 transition-colors"
+            >
+              Explore all
+            </button>
           </div>
 
           {filteredEvents.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>
           ) : (
-            <div className="p-12 text-center rounded-3xl glass-panel border border-slate-800 space-y-4 max-w-md mx-auto my-12">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-900 flex items-center justify-center text-slate-400">
-                <CalendarX className="w-7 h-7" />
+            <div className="p-12 text-center rounded-3xl bg-white border border-slate-200 space-y-4 max-w-md mx-auto my-14 shadow-sm">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+                <CalendarX className="w-8 h-8" />
               </div>
-              <h3 className="text-lg font-bold text-white">No Events Found</h3>
-              <p className="text-xs text-slate-400">
-                We couldn't find any events matching your search filters. Try selecting a different category or clearing search terms.
+              <h3 className="text-xl font-black text-slate-900">No Events Match Your Filters</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                We couldn't find any events matching your selected search terms or categories. Try clearing your search query.
               </p>
               <button
                 onClick={resetFilters}
-                className="mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-all shadow-md shadow-indigo-600/30"
+                className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition-all shadow-md shadow-blue-600/20 active:scale-95"
               >
-                Reset All Filters
+                <FilterX className="w-4 h-4" /> Reset All Filters
               </button>
             </div>
           )}
+        </div>
+
+        {/* Flowdesk 4-Column Platform Stats Bar */}
+        <div className="py-10 border-y border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">10M+</div>
+              <div className="text-xs text-slate-500 font-bold">Learners & Attendees</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">500+</div>
+              <div className="text-xs text-slate-500 font-bold">Campus Events</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+              <Star className="w-5 h-5 fill-blue-600" />
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">4.8</div>
+              <div className="text-xs text-slate-500 font-bold">Avg. rating</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+              <Award className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl font-black text-slate-900">180+</div>
+              <div className="text-xs text-slate-500 font-bold">Certified campus clubs</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Why CampusPulse Section */}
+        <div className="space-y-8 pt-4">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Why CampusPulse?</h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-medium">The ultimate event discovery and registration platform built for college students & campus clubs.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <Compass className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Discover Events Easily</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Find all upcoming club hackathons, technical workshops, cultural fests, and guest lectures across your campus in one centralized portal.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Register in Seconds</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                One-click seat reservations with instant confirmation for your favorite campus events without complicated paperwork.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <QrCode className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Digital Pass & QR Check-In</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Receive digital event tickets with unique QR codes for fast, hassle-free venue check-in at entrance desks.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Track Registered Events</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Manage all your active event passes, dates, timings, and venue details in your personalized My Tickets passbook.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <Users className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Club Attendee Management</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Club managers can easily publish events, monitor seat capacity, verify tickets, and export CSV attendee rosters in real-time.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3 hover:shadow-md transition-shadow">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                <Award className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900">Certifications & Growth</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Build your college portfolio by participating in certified workshops, hackathons, and student competitions.
+              </p>
+            </div>
+
+          </div>
         </div>
 
       </div>
@@ -112,3 +210,6 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+

@@ -9,7 +9,7 @@ import { AuthModal } from '@/components/AuthModal';
 
 export const metadata: Metadata = {
   title: 'CampusPulse | College Club Event Discovery & Registration Portal',
-  description: 'Explore upcoming college club events, hackathons, open mics, battlebots, and sports tournaments. Register and generate your digital pass instant QR code.',
+  description: 'Explore upcoming college club events, hackathons, seminars, competitions, and workshops. Register and generate your digital pass instant QR code.',
 };
 
 export default function RootLayout({
@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+    <html lang="en">
+      <body className="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
         <AuthProvider>
           <EventsProvider>
             
@@ -35,16 +35,14 @@ export default function RootLayout({
             <AuthModal />
 
             {/* Footer */}
-            <footer className="w-full py-8 border-t border-slate-800/80 bg-slate-950 text-xs text-slate-400">
+            <footer className="w-full py-8 border-t border-slate-200 bg-white text-xs text-slate-500">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-white">CampusPulse</span>
-                  <span>— College Club Event Portal</span>
+                  <span className="font-extrabold text-slate-900 text-sm">CampusPulse</span>
+                  <span className="text-slate-500 font-medium">— College Club Event Portal</span>
                 </div>
-                <div className="flex items-center gap-4 text-slate-400">
-                  <span>Built with Next.js & Supabase</span>
-                  <span>•</span>
-                  <span>College Affairs & Student Unions</span>
+                <div className="text-slate-400 text-xs font-medium text-center sm:text-right">
+                  Empowering campus clubs & students with seamless event discovery & digital tickets.
                 </div>
               </div>
             </footer>
@@ -55,3 +53,4 @@ export default function RootLayout({
     </html>
   );
 }
+
